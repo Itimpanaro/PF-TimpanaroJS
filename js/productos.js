@@ -1,8 +1,40 @@
-let productos = [
-    {id: 0, nombre: 'Air Jordan 1', precio: 200000, stock: 5, imagen: './imagenes/jordan1.png'},
-    {id: 1, nombre: 'Air Jordan 2', precio: 150000, stock: 0, imagen: './imagenes/jordan2.png'},
-    {id: 2, nombre: 'Air Jordan 3', precio: 250000, stock: 3, imagen: './imagenes/jordan3.png'},
-    {id: 3, nombre: 'Air Jordan 4', precio: 220000, stock: 6, imagen: './imagenes/jordan4.png'},
-    {id: 4, nombre: 'Air Jordan 5', precio: 180000, stock: 4, imagen: './imagenes/jordan5.png'},
-    {id: 5, nombre: 'Air Jordan 6', precio: 240000, stock: 2, imagen: './imagenes/jordan6.png'},
-]
+const API_BASE = "https://fakestoreapi.com/"
+const ENDPOINT_PRODUCTS = 'products'
+let productos = []
+
+fetch(API_BASE + ENDPOINT_PRODUCTS)
+    .then((respuesta)=>{
+        return respuesta.json()
+    })
+    .then((data)=>{
+        productos = data
+        const productosSection = document.querySelector('#productos')
+        if(productosSection !== null){
+            productos.forEach(producto => {
+                const productosArticle = document.createElement('article')
+                productosArticle.classList.add('productos__article')
+                productosArticle.innerHTML = `
+                    <a class="img-contenedor" href="#"><img class="img-producto" src="${producto.image}"></a>
+                    <p class="fw-bold">${producto.title}</p>
+                    <p>$${producto.price}</p> 
+                    <div class="btn-stock" value="${producto.id}"> 
+                        <button class="agregarAlCarrito" value="${producto.id}">Comprar</button> 
+                    </div> 
+                    <div class="contenedorMsgAgregado"> 
+                        <span class="msgAgregado"></span> 
+                    </div>`
+                productosSection.appendChild(productosArticle)
+
+                const boton = productosArticle.querySelector('.agregarAlCarrito')
+                boton.addEventListener('click', (event) => {
+                    const idProducto = event.target.value
+                    agregarAlCarrito(idProducto)
+                })
+            })
+        }
+    })
+    .catch((error)=>{
+        console.log(error)
+    })
+
+

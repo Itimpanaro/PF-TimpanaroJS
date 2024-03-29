@@ -28,14 +28,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const email = inputEmail.value
                 console.log(email)
                 subsNews.push(email)
-                localStorage.setItem('email', JSON.stringify(subsNews));
+                localStorage.setItem('email', JSON.stringify(subsNews))
                 crearCodigo()
             })
         }
     }    
-})
 
-document.addEventListener('DOMContentLoaded', () => {    
     const productosGuardados = localStorage.getItem('productos')
     if(productosGuardados){
         productos = JSON.parse(productosGuardados)
@@ -46,16 +44,9 @@ document.addEventListener('DOMContentLoaded', () => {
         carrito = JSON.parse(carritoGuardado)
         acumuladorCarrito()
     }
-
+    
     let emailsGuardados = localStorage.getItem('email')
     if(emailsGuardados){
         emailsGuardados = JSON.parse(emailsGuardados)
     }
-})
-
-botones.forEach(boton => {
-    boton.addEventListener('click', (event) => {
-        const idProducto = event.target.value
-        agregarAlCarrito(idProducto)
-    })
 })

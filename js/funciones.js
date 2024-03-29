@@ -12,8 +12,8 @@ function cambiarBotonSinStock(){
 
 function agregarAlCarrito(id){
     const productoEncontrado = productos.findIndex((Element) => Element.id == id)
-    if(productoEncontrado !== -1 && productos[productoEncontrado].stock > 0){
-        productos[productoEncontrado].stock --
+    if(productoEncontrado !== -1 && productos[productoEncontrado].rating.count > 0){
+        productos[productoEncontrado].rating.count --
         const iCarrito = carrito.findIndex(item => item.id == id)
         if(iCarrito !== -1){
             carrito[iCarrito].cantidad++
@@ -24,7 +24,7 @@ function agregarAlCarrito(id){
         acumuladorCarrito()
         localStorage.setItem('productos', JSON.stringify(productos))
         localStorage.setItem('carrito', JSON.stringify(carrito))
-        mostrarMensajeAgregadoAlCarrito(productoEncontrado)
+        mostrarMensajeAgregadoAlCarrito()
     }
     cambiarBotonSinStock()
 }
@@ -37,11 +37,24 @@ function acumuladorCarrito(){
     contadorCarrito.innerText = totalProductos
 }
 
-function mostrarMensajeAgregadoAlCarrito(id){
-    msgAgregado[id].innerText = 'AGREGADO AL CARRITO'
-    setTimeout(() => {
-        msgAgregado[id].innerText = ' '
-    }, 500)
+let mensajeVisible = false
+function mostrarMensajeAgregadoAlCarrito(){
+    if(!mensajeVisible){
+        Toastify({
+            text: "Producto añadido al carrito",
+            duration: 1000,
+            position: "center",
+            gravity: "bottom",
+            style:{
+                background: "#000000",
+            },
+        }).showToast()
+
+        mensajeVisible = true
+        setTimeout(()=>{
+            mensajeVisible = false
+        }, 1000)
+    }
 }
 
 function actualizarCarrito() {
@@ -50,22 +63,22 @@ function actualizarCarrito() {
     
     if (carrito.length > 0) {
         carrito.forEach(item => {
-            const precioUnidad = item.precio
+            const precioUnidad = item.price
             const cantidadProducto = item.cantidad
             let totalPorProducto = precioUnidad * cantidadProducto
             const productoLista = document.createElement('article')
             
             productoLista.classList.add('art-carrito')
             productoLista.innerHTML = `
-            <img class="muestra-carrito" src="${item.imagen}" alt="${item.nombre}">
-            <span class="descripcion-carrito">${item.nombre}</span>
-            <span class="descripcion-carrito text-center">Precio<br>$${totalPorProducto}</span>
+            <img class="muestra-carrito" src="${item.image}" alt="${item.description}">
+            <span class="descripcion-carrito">${item.title}</span>
+            <span class="descripcion-carrito text-center">Precio<br>$${(totalPorProducto).toFixed(2)}</span>
             <span class="descripcion-carrito text-center">Cantidad<br>${item.cantidad} Un.</span>
             <button class="btn-eliminar" value=${item.id}><img class="img-eliminar" src="./imagenes/eliminar.png" alt="Eliminar"></button>
             `
             listaCarrito.appendChild(productoLista)
             
-            const subtotal = item.precio * item.cantidad
+            const subtotal = item.price * item.cantidad
             totalAPagar += subtotal
         })
 
@@ -78,7 +91,7 @@ function actualizarCarrito() {
         listaCarrito.appendChild(codigoDescuento)
         const totalAPagarDiv = document.createElement('div')
         totalAPagarDiv.classList.add('p-3', 'text-center')
-        totalAPagarDiv.innerHTML = `<span class="total-precio">Subtotal: $${totalAPagar}</span>
+        totalAPagarDiv.innerHTML = `<span class="total-precio">Subtotal: $${(totalAPagar).toFixed(2)}</span>
         <br>
         <span class="precio-descuento"></span>
         <br>
@@ -86,25 +99,6 @@ function actualizarCarrito() {
         listaCarrito.appendChild(totalAPagarDiv)
         validarCodigo(totalAPagar)
         
-        const validarDescuento = () => {
-            return new Promise((resolve, reject)=>{
-            setInterval(()=>{
-                let validacionDescuento = document.querySelector('.validar-descuento')
-                    if(validacionDescuento !== null){
-                        clearInterval()
-                        validacionDescuento == null
-                        resolve(totalAPagar)
-                    }   
-                }, 1000)
-            })
-        }
-        validarDescuento()
-            .then((x)=>{
-                console.log("Precio con descuento: $", (x * 0.90))
-            })
-            .catch(()=>{
-                console.log('Precio sin descuento: $', totalAPagar)
-            })
     }else{
         mostrarErrorCarrito()
     }   
@@ -115,7 +109,7 @@ function mostrarErrorCarrito(){
         nuevoItem.classList.add('no-stock', 'p-5', 'h1', 'text-center')
         nuevoItem.innerHTML = `<img class="apagado text-center" src="./imagenes/carrito.png"></img>
         <br><br><span class="text-center">NO EXISTEN PRODUCTOS EN EL CARRITO</span><br><br>
-        <a class="nav-link" href="./index.html"><button class="agregarAlCarrito">Ir a la tienda</button></a>`
+        <a class="nav-link" href="./index.html"><button class="agregarAlCarrito t-0">Ir a la tienda</button></a>`
         listaCarrito.appendChild(nuevoItem)
 }
 
@@ -133,11 +127,27 @@ function eliminarDelCarrito(id) {
         localStorage.setItem('productos', JSON.stringify(productos))
         localStorage.setItem('carrito', JSON.stringify(carrito))
         actualizarCarrito()
+        if(!mensajeVisible){
+            Toastify({
+                text: "Producto eliminado del carrito",
+                duration: 1000,
+                position: "center",
+                gravity: "bottom",
+                style:{
+                    background: "#000000",
+                },
+            }).showToast()
+    
+            mensajeVisible = true
+            setTimeout(()=>{
+                mensajeVisible = false
+            }, 1000)
+        }
     }
 }
 
 function crearCodigo(){
-    const newsDiv = document.querySelector('.codigo-descuento');
+    const newsDiv = document.querySelector('.codigo-descuento')
     const nuevoMensaje = document.createElement('div')
     nuevoMensaje.classList.add('newsletter-texto')
     nuevoMensaje.innerHTML = `TU CODIGO ES: NIKE10OFF`
@@ -169,7 +179,7 @@ function validarCodigo(precio){
                     if(banderaDescuento === 0){
                         const msgDescuento = document.createElement('span')
                         msgDescuento.classList.add('text-center', 'total-precio', 'pt-2', 'validar-descuento')
-                        msgDescuento.innerHTML = `Precio con descuento: $${precio * 0.90}`
+                        msgDescuento.innerHTML = `Precio con descuento: $${parseFloat((precio * 0.90).toFixed(2))}`
                         span.appendChild(msgDescuento)
                         banderaDescuento++
                         mensajeMostrado = false
