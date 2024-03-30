@@ -57,6 +57,7 @@ function mostrarMensajeAgregadoAlCarrito(){
     }
 }
 
+let pagoTotal = 0
 function actualizarCarrito() {
     listaCarrito.innerHTML = ''
     let totalAPagar = 0
@@ -80,6 +81,7 @@ function actualizarCarrito() {
             
             const subtotal = item.price * item.cantidad
             totalAPagar += subtotal
+            pagoTotal = totalAPagar
         })
 
         const codigoDescuento = document.createElement('div')
@@ -98,6 +100,66 @@ function actualizarCarrito() {
         <button class="pagar">Pagar</button>`
         listaCarrito.appendChild(totalAPagarDiv)
         validarCodigo(totalAPagar)
+
+        const btnPagar = document.querySelector('.pagar')
+        const contenedor = document.querySelector('#pagos')
+        btnPagar.addEventListener('click', ()=>{
+            document.body.classList.remove('desplazar-auto')
+            document.body.classList.add('desplazar-block')
+            document.documentElement.scrollTop = 0
+            contenedor.classList.remove('d-none')
+            const nuevoDiv = document.createElement('div')
+            nuevoDiv.classList.add('fondo-pago')
+            nuevoDiv.innerHTML = `
+            <div class="ventana-pago">
+                <button class="cerrar-pago">X</button>
+                <section id="cuotas">
+                    <table class="tabla-pago">
+                        <tr>
+                            <td>Cuotas</td>
+                            <td>Precio por cuota</td>
+                            <td>Precio total</td>
+                        </tr>
+                        <tr>
+                            <td>1 cuota</td>
+                            <td>$${(pagoTotal).toFixed(2)}</td>
+                            <td>$${(pagoTotal).toFixed(2)}</td>
+                        </tr>
+                        <tr>
+                            <td>3 cuotas</td>
+                            <td>$${parseFloat(((pagoTotal*1.30) / 3).toFixed(2))}</td>
+                            <td>$${parseFloat((pagoTotal*1.30).toFixed(2))}</td>
+                        </tr>
+                        <tr>
+                            <td>6 cuotas</td>
+                            <td>$${parseFloat(((pagoTotal*1.65) / 6).toFixed(2))}</td>
+                            <td>$${parseFloat((pagoTotal*1.65).toFixed(2))}</td>
+                        </tr>
+                        <tr>
+                            <td>12 cuotas</td>
+                            <td>$${parseFloat(((pagoTotal*2) / 12).toFixed(2))}</td>
+                            <td>$${parseFloat((pagoTotal*2).toFixed(2))}</td>
+                        </tr>
+                    </table>
+
+                    <label for="cuotas">Cantidad de cuotas:</label>
+                    <select id="cuotas" class="mt-5">
+                        <option value="1">1</option>
+                        <option value="3">3</option>
+                        <option value="6">6</option>
+                        <option value="12">12</option>
+                    </select>
+                </section>
+            </div>`
+            contenedor.appendChild(nuevoDiv)
+            const btnCerrar = document.querySelector('.cerrar-pago')
+            btnCerrar.addEventListener('click', ()=>{
+                document.body.classList.remove('desplazar-block')
+                document.body.classList.add('desplazar-auto')
+                contenedor.removeChild(nuevoDiv)
+                contenedor.classList.add('d-none')
+            })
+        })
         
     }else{
         mostrarErrorCarrito()
@@ -182,6 +244,7 @@ function validarCodigo(precio){
                         msgDescuento.innerHTML = `Precio con descuento: $${parseFloat((precio * 0.90).toFixed(2))}`
                         span.appendChild(msgDescuento)
                         banderaDescuento++
+                        pagoTotal = parseFloat((precio * 0.90).toFixed(2))
                         mensajeMostrado = false
                     }
                 },1000)

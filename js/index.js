@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             emailNews.addEventListener('click', (event) => {
                 const email = inputEmail.value
-                console.log(email)
                 subsNews.push(email)
                 localStorage.setItem('email', JSON.stringify(subsNews))
                 crearCodigo()
