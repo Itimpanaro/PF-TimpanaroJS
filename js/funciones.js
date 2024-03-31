@@ -100,7 +100,7 @@ function actualizarCarrito() {
         <button class="pagar">Pagar</button>`
         listaCarrito.appendChild(totalAPagarDiv)
         validarCodigo(totalAPagar)
-
+        
         const btnPagar = document.querySelector('.pagar')
         const contenedor = document.querySelector('#pagos')
         btnPagar.addEventListener('click', ()=>{
@@ -114,6 +114,7 @@ function actualizarCarrito() {
             <div class="ventana-pago">
                 <button class="cerrar-pago">X</button>
                 <section id="cuotas">
+
                     <table class="tabla-pago">
                         <tr>
                             <td>Cuotas</td>
@@ -149,11 +150,106 @@ function actualizarCarrito() {
                         <option value="6">6</option>
                         <option value="12">12</option>
                     </select>
+                    <br>
+                    <button class="siguiente">Siguiente</button>
                 </section>
-            </div>`
+                <div class ="pasos">
+                    <div class="indice-guia">
+                        <span>1. Cuotas</span>
+                        <span>2. Datos</span>
+                        <span>3. Pago</span>
+                        <span>4. Confirmacion</span>
+                        <span class="barra actual"></span>
+                        <span class="barra desactivado"></span>
+                        <span class="barra desactivado"></span>
+                        <span class="barra desactivado">4.confirmacion</span>
+                    </div>
+                </div>`
             contenedor.appendChild(nuevoDiv)
+
+            const siguiente = document.querySelector('.siguiente')
+            siguiente.addEventListener('click', ()=>{
+                nuevoDiv.innerHTML = ''
+                nuevoDiv.innerHTML= `<div class="ventana-pago">
+                <button class="cerrar-pago">X</button>
+                <fieldset>
+                    <legend>Datos Personales:</legend>
+                    <label for="fname">Nombre:</label>
+                    <input type="text" id="fname" name="fname"><br><br>
+                    <label for="dni">dni:</label>
+                    <input type="number" id="dni" name="dni"><br><br>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email"><br><br>
+                    <label for="birthday">Fecha de nacimiento:</label>
+                    <input type="date" id="birthday" name="birthday"><br><br>
+                </fieldset>
+                <br>
+                <button class="siguiente">Siguiente</button>
+                <div class ="pasos">
+                    <div class="indice-guia">
+                        <span>1. Cuotas</span>
+                        <span>2. Datos</span>
+                        <span>3. Pago</span>
+                        <span>4. Confirmacion</span>
+                        <span class="barra completo"></span>
+                        <span class="barra actual"></span>
+                        <span class="barra desactivado"></span>
+                        <span class="barra desactivado">4.confirmacion</span>
+                    </div>
+                </div>`
+                contenedor.appendChild(nuevoDiv)
+                
+                const btnCerrar = document.querySelector('.cerrar-pago')
+                btnCerrar.addEventListener('click', ()=>{
+                    document.body.classList.remove('desplazar-block')
+                    document.body.classList.add('desplazar-auto')
+                    contenedor.removeChild(nuevoDiv)
+                    contenedor.classList.add('d-none')
+                    
+                })
+                const siguiente = document.querySelector('.siguiente')
+                siguiente.addEventListener('click', ()=>{
+                    nuevoDiv.innerHTML = ''
+                    nuevoDiv.innerHTML= `<div class="ventana-pago">
+                    <button class="cerrar-pago">X</button>
+                    <fieldset>
+                        <legend>Datos Personales:</legend>
+                        <label for="cardnum">Nombre:</label>
+                        <input type="number" id="cardnum" name="cardnum"><br><br>
+                        <label for="vence">Vencimiento:</label>
+                        <input type="month" id="vence" name="vence"><br><br>
+                        <label for="CVV">CVV</label>
+                        <input type="tel" maxlength="3" id="CVV" name="CVV"><br><br>
+                    </fieldset>
+                    <br>
+                    <button class="siguiente">Siguiente</button>
+                    <div class ="pasos">
+                        <div class="indice-guia">
+                            <span>1. Cuotas</span>
+                            <span>2. Datos</span>
+                            <span>3. Pago</span>
+                            <span>4. Confirmacion</span>
+                            <span class="barra completo"></span>
+                            <span class="barra completo"></span>
+                            <span class="barra actual"></span>
+                            <span class="barra desactivado">4.confirmacion</span>
+                        </div>
+                    </div>`
+                    contenedor.appendChild(nuevoDiv)
+                    
+                    const btnCerrar = document.querySelector('.cerrar-pago')
+                    btnCerrar.addEventListener('click', ()=>{
+                        document.body.classList.remove('desplazar-block')
+                        document.body.classList.add('desplazar-auto')
+                        contenedor.removeChild(nuevoDiv)
+                        contenedor.classList.add('d-none')
+                        
+                    })
+                })
+            })
+
             const btnCerrar = document.querySelector('.cerrar-pago')
-            btnCerrar.addEventListener('click', ()=>{
+            cerrar = btnCerrar.addEventListener('click', ()=>{
                 document.body.classList.remove('desplazar-block')
                 document.body.classList.add('desplazar-auto')
                 contenedor.removeChild(nuevoDiv)

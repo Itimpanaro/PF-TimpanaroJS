@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (emailGuardado !== null) {
             alertaNews.style.display = 'none'
         } else {
+            document.documentElement.scrollTop = 0
             alertaNews.style.display = 'block'
             cerrarAlertNews.addEventListener('click', () => {
                 alertaNews.style.display = 'none'
